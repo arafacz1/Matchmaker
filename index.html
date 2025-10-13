@@ -4,13 +4,64 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>❤ Matchmaker for the Web ❤</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: pink;
+      text-align: center;
+      color: #333;
+    }
+
+    .container {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 40px auto;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .question {
+      margin: 15px 0;
+    }
+
+    input[type="number"] {
+      width: 50px;
+      text-align: center;
+      margin-left: 10px;
+    }
+
+    button {
+      background-color: #ff4081;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      background-color: #e91e63;
+    }
+
+    #results {
+      margin-top: 20px;
+      font-size: 1.1em;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>❤ Matchmaker for the Web ❤</h1>
     <p>Answer each question from 1 (Strongly Disagree) to 5 (Strongly Agree).  
-      We'll see if you're my true love, just a friend, or someone to run from!</p>
+    We'll calculate how compatible we are!</p>
 
     <form id="matchForm">
       <div class="question">
@@ -37,10 +88,66 @@
       <button type="button" onclick="calculateMatch()">Check Compatibility 💞</button>
     </form>
 
+    <div id="error" class="error"></div>
     <div id="results"></div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // Desired "true love" answers (1-5 scale)
+    const TRUE_LOVE_ANSWERS = [5, 4, 1, 3, 5];
+    const MAX_SCORE = 100;
+    const TOTAL_QUESTIONS = 5;
+
+    // Thresholds
+    const TRUE_LOVE_THRESHOLD = 80;
+    const FRIEND_THRESHOLD = 60;
+
+    // Validate all inputs
+    function validate() {
+      for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+        const value = parseInt(document.getElementById("q" + i).value);
+        if (isNaN(value) || value < 1 || value > 5) {
+          document.getElementById("error").innerText =
+            "⚠️ Please enter numbers between 1 and 5 for all questions.";
+          return false;
+        }
+      }
+      document.getElementById("error").innerText = "";
+      return true;
+    }
+
+    // Calculate compatibility
+    function calculateMatch() {
+      if (!validate()) return;
+
+      let totalDifference = 0;
+      let resultText = "<h2>💘 Compatibility Results 💘</h2>";
+
+      for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
+        const answer = parseInt(document.getElementById("q" + i).value);
+        const difference = Math.abs(answer - TRUE_LOVE_ANSWERS[i - 1]);
+        totalDifference += difference;
+        resultText += `<p>Question ${i} difference: ${difference}</p>`;
+      }
+
+      // Max possible difference per question is 4, total 20
+      const compatibilityScore = Math.round(MAX_SCORE - (totalDifference / 20) * MAX_SCORE);
+
+      // Decide message
+      let message;
+      if (compatibilityScore >= TRUE_LOVE_THRESHOLD) {
+        message = "💖 We're a perfect match! 💖";
+      } else if (compatibilityScore >= FRIEND_THRESHOLD) {
+        message = "💞 We could be great friends!";
+      } else {
+        message = "🚨 Run! We're totally different!";
+      }
+
+      // Display results
+      resultText += `<h3>Overall Compatibility: ${compatibilityScore}%</h3>`;
+      resultText += `<p>${message}</p>`;
+      document.getElementById("results").innerHTML = resultText;
+    }
+  </script>
 </body>
 </html>
-
