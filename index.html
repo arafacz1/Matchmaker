@@ -1,11 +1,46 @@
 <!DOCTYPE html>
-<meta charset="UTF-8">
-<html>
+<html lang="en">
 <head>
-    <title>Matchmaker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>❤ Matchmaker for the Web ❤</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Hello World!</h1>
-    <p>This is a simple "Hello World!" page.</p>
+  <div class="container">
+    <h1>❤ Matchmaker for the Web ❤</h1>
+    <p>Answer each question from 1 (Strongly Disagree) to 5 (Strongly Agree).  
+      We'll see if you're my true love, just a friend, or someone to run from!</p>
+
+    <form id="matchForm">
+      <div class="question">
+        <label>1️⃣ I enjoy spending time outdoors.</label>
+        <input type="number" id="q1" min="1" max="5" required />
+      </div>
+      <div class="question">
+        <label>2️⃣ I love dogs more than cats.</label>
+        <input type="number" id="q2" min="1" max="5" required />
+      </div>
+      <div class="question">
+        <label>3️⃣ I think pineapple belongs on pizza.</label>
+        <input type="number" id="q3" min="1" max="5" required />
+      </div>
+      <div class="question">
+        <label>4️⃣ I enjoy watching movies over reading books.</label>
+        <input type="number" id="q4" min="1" max="5" required />
+      </div>
+      <div class="question">
+        <label>5️⃣ I prefer staying up late rather than waking up early.</label>
+        <input type="number" id="q5" min="1" max="5" required />
+      </div>
+
+      <button type="button" onclick="calculateMatch()">Check Compatibility 💞</button>
+    </form>
+
+    <div id="results"></div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
+
