@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>❤ Matchmaker for the Web ❤</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: pink;
+      background-color: lightpink; /* one solid background color */
       text-align: center;
+      padding: 20px;
+      margin: 0;
       color: #333;
     }
 
     .container {
-      background: white;
+      background-color: white;
       border-radius: 15px;
-      padding: 20px;
-      margin: 40px auto;
+      padding: 25px;
       width: 90%;
-      max-width: 500px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      max-width: 450px;
+      margin: 30px auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     }
 
-    .question {
-      margin: 15px 0;
+    h1 {
+      color: #ff4081;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin: 12px 0;
     }
 
     input[type="number"] {
       width: 50px;
       text-align: center;
-      margin-left: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      padding: 4px;
     }
 
     button {
@@ -40,6 +51,8 @@
       border-radius: 10px;
       cursor: pointer;
       font-size: 1rem;
+      margin-top: 15px;
+      transition: 0.3s;
     }
 
     button:hover {
@@ -48,106 +61,96 @@
 
     #results {
       margin-top: 20px;
-      font-size: 1.1em;
-    }
-
-    .error {
-      color: red;
       font-weight: bold;
+      font-size: 1.1em;
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <h1>❤ Matchmaker for the Web ❤</h1>
-    <p>Answer each question from 1 (Strongly Disagree) to 5 (Strongly Agree).  
-    We'll calculate how compatible we are!</p>
+    <p>Rate each from 1 (Disagree) to 5 (Agree):</p>
 
-    <form id="matchForm">
-      <div class="question">
-        <label>1️⃣ I enjoy spending time outdoors.</label>
-        <input type="number" id="q1" min="1" max="5" required />
-      </div>
-      <div class="question">
-        <label>2️⃣ I love dogs more than cats.</label>
-        <input type="number" id="q2" min="1" max="5" required />
-      </div>
-      <div class="question">
-        <label>3️⃣ I think pineapple belongs on pizza.</label>
-        <input type="number" id="q3" min="1" max="5" required />
-      </div>
-      <div class="question">
-        <label>4️⃣ I enjoy watching movies over reading books.</label>
-        <input type="number" id="q4" min="1" max="5" required />
-      </div>
-      <div class="question">
-        <label>5️⃣ I prefer staying up late rather than waking up early.</label>
-        <input type="number" id="q5" min="1" max="5" required />
-      </div>
+    <p>1️⃣ I enjoy traveling the world.<br>
+      <input type="number" id="q1" min="1" max="5">
+    </p>
 
-      <button type="button" onclick="calculateMatch()">Check Compatibility 💞</button>
-    </form>
+    <p>2️⃣ I love dogs more than any other pet.<br>
+      <input type="number" id="q2" min="1" max="5">
+    </p>
 
-    <div id="error" class="error"></div>
+    <p>3️⃣ I would rather go golfing than fishing.<br>
+      <input type="number" id="q3" min="1" max="5">
+    </p>
+
+    <p>4️⃣ I enjoy watching movies more than reading books.<br>
+      <input type="number" id="q4" min="1" max="5">
+    </p>
+
+    <p>5️⃣ I prefer staying up late instead of waking up early.<br>
+      <input type="number" id="q5" min="1" max="5">
+    </p>
+
+    <button onclick="checkMatch()">Check Compatibility 💞</button>
     <div id="results"></div>
   </div>
 
   <script>
-    // Desired "true love" answers (1-5 scale)
-    const TRUE_LOVE_ANSWERS = [5, 4, 1, 3, 5];
-    const MAX_SCORE = 100;
-    const TOTAL_QUESTIONS = 5;
+    function checkMatch() {
+      // Get user answers
+      var q1 = Number(document.getElementById("q1").value);
+      var q2 = Number(document.getElementById("q2").value);
+      var q3 = Number(document.getElementById("q3").value);
+      var q4 = Number(document.getElementById("q4").value);
+      var q5 = Number(document.getElementById("q5").value);
 
-    // Thresholds
-    const TRUE_LOVE_THRESHOLD = 80;
-    const FRIEND_THRESHOLD = 60;
-
-    // Validate all inputs
-    function validate() {
-      for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
-        const value = parseInt(document.getElementById("q" + i).value);
-        if (isNaN(value) || value < 1 || value > 5) {
-          document.getElementById("error").innerText =
-            "⚠️ Please enter numbers between 1 and 5 for all questions.";
-          return false;
-        }
-      }
-      document.getElementById("error").innerText = "";
-      return true;
-    }
-
-    // Calculate compatibility
-    function calculateMatch() {
-      if (!validate()) return;
-
-      let totalDifference = 0;
-      let resultText = "<h2>💘 Compatibility Results 💘</h2>";
-
-      for (let i = 1; i <= TOTAL_QUESTIONS; i++) {
-        const answer = parseInt(document.getElementById("q" + i).value);
-        const difference = Math.abs(answer - TRUE_LOVE_ANSWERS[i - 1]);
-        totalDifference += difference;
-        resultText += `<p>Question ${i} difference: ${difference}</p>`;
+      // Validate inputs
+      if (
+        q1 < 1 || q1 > 5 ||
+        q2 < 1 || q2 > 5 ||
+        q3 < 1 || q3 > 5 ||
+        q4 < 1 || q4 > 5 ||
+        q5 < 1 || q5 > 5
+      ) {
+        document.getElementById("results").innerHTML =
+          "⚠️ Please enter numbers between 1 and 5 for all questions.";
+        return;
       }
 
-      // Max possible difference per question is 4, total 20
-      const compatibilityScore = Math.round(MAX_SCORE - (totalDifference / 20) * MAX_SCORE);
+      // My (computer's) ideal answers
+      var a1 = 5;
+      var a2 = 4;
+      var a3 = 1;
+      var a4 = 3;
+      var a5 = 5;
 
-      // Decide message
-      let message;
-      if (compatibilityScore >= TRUE_LOVE_THRESHOLD) {
-        message = "💖 We're a perfect match! 💖";
-      } else if (compatibilityScore >= FRIEND_THRESHOLD) {
-        message = "💞 We could be great friends!";
+      // Calculate total difference
+      var totalDifference = Math.abs(q1 - a1)
+                          + Math.abs(q2 - a2)
+                          + Math.abs(q3 - a3)
+                          + Math.abs(q4 - a4)
+                          + Math.abs(q5 - a5);
+
+      // Convert to a score out of 100
+      var score = 100 - (totalDifference / 20) * 100;
+      score = Math.round(score);
+
+      // Message based on score
+      var message = "";
+      if (score >= 80) {
+        message = "💖 We’re a PERFECT match!";
+      } else if (score >= 60) {
+        message = "💞 We would be great friends!";
       } else {
-        message = "🚨 Run! We're totally different!";
+        message = "🚨 Uh oh... definetly not a good match!";
       }
 
-      // Display results
-      resultText += `<h3>Overall Compatibility: ${compatibilityScore}%</h3>`;
-      resultText += `<p>${message}</p>`;
-      document.getElementById("results").innerHTML = resultText;
+      // Display result
+      document.getElementById("results").innerHTML =
+        "Your compatibility score: " + score + "%<br>" + message;
     }
   </script>
+
 </body>
 </html>
